@@ -1,0 +1,839 @@
+{
+	"info": {
+		"_postman_id": "930dd3bc-0eb9-46d8-8404-f301d4412db2",
+		"name": "OpenWeatherMap",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Current weather data",
+			"description": "Requestes for current weather data for one and several locations",
+			"item": [
+				{
+					"name": "GetWeatherByCityId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9afcec65-97d9-46e7-ae9c-7f7b2493da7f",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"postman.setEnvironmentVariable(\"CITYNAME\", jsonData.name);",
+									"postman.setEnvironmentVariable(\"LATITUDE\", jsonData.coord.lat);",
+									"postman.setEnvironmentVariable(\"LONGITUDE\", jsonData.coord.lon);",
+									"",
+									"var cityIdInRequest = pm.environment.get(\"CITYID\");",
+									"",
+									"tests[\"Expected city ID = \" + cityIdInRequest + \" is present in Response\"] = jsonData.id == cityIdInRequest; ",
+									"",
+									"",
+									""
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "176e91d2-c7af-4433-8399-d0f9da749afd",
+								"type": "text/javascript",
+								"exec": [
+									"// pm.environment.set(\"APPID\", \"a755d9970c9aa0c0de640342f5a81a6a\");",
+									"",
+									"// var cityIds = [",
+									"//     703448,  // Kiev",
+									"//     3094802, // Krakow",
+									"//     5809844, // Seattle",
+									"//     4887398  // Chicago",
+									"// ];",
+									"",
+									"// var randomCityId = Math.floor((Math.random() * 3) + 1);",
+									"",
+									"// postman.setEnvironmentVariable(\"CITYID\", cityIds[randomCityId])",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "api.openweathermap.org/data/2.5/weather?id={{CITYID}}&units=metric&APPID={{APPID}}",
+							"host": [
+								"api",
+								"openweathermap",
+								"org"
+							],
+							"path": [
+								"data",
+								"2.5",
+								"weather"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{CITYID}}"
+								},
+								{
+									"key": "units",
+									"value": "metric"
+								},
+								{
+									"key": "APPID",
+									"value": "{{APPID}}"
+								}
+							]
+						},
+						"description": "This request verifies that current weather data can be called by particular City ID. The tests verify that expected City ID and weather data is present in response."
+					},
+					"response": []
+				},
+				{
+					"name": "GetWeatherByCityName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fb4c55e1-16dd-4e9a-a220-1c1065df8254",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"var cityNameInRequest = pm.environment.get(\"CITYNAME\");",
+									"",
+									"tests[\"Expected city Name = \" + cityNameInRequest + \" is present in Response\"] = jsonData.name == cityNameInRequest; ",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "api.openweathermap.org/data/2.5/weather?q={{CITYNAME}}&APPID={{APPID}}",
+							"host": [
+								"api",
+								"openweathermap",
+								"org"
+							],
+							"path": [
+								"data",
+								"2.5",
+								"weather"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "{{CITYNAME}}"
+								},
+								{
+									"key": "APPID",
+									"value": "{{APPID}}"
+								}
+							]
+						},
+						"description": "This request verifies that current weather data can be called by particular City Name. The tests verify that expected City Name and weather data is present in response."
+					},
+					"response": []
+				},
+				{
+					"name": "GetWeatherByLatitude/Longitude",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8bfc13e4-0aa8-414c-b245-36cfd8b85e51",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"var latInRequest = pm.environment.get(\"LATITUDE\");",
+									"var lonInRequest = pm.environment.get(\"LONGITUDE\");",
+									"var cityNameInRequest = pm.environment.get(\"CITYNAME\");",
+									"",
+									"pm.test(\"Expected city Name = \" + cityNameInRequest + \" is present in Response\", function () {",
+									"    pm.expect(jsonData.name).to.eql(cityNameInRequest)",
+									"   ",
+									"})",
+									"",
+									"tests[\"Expected latitude \" + latInRequest + \" is present in Response\"] = jsonData.coord.lat == latInRequest; ",
+									"",
+									"tests[\"Expected longitude \" + lonInRequest + \" is present in Response\"] = jsonData.coord.lon == lonInRequest; ",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "api.openweathermap.org/data/2.5/weather?lat={{LATITUDE}}&lon={{LONGITUDE}}&APPID={{APPID}}",
+							"host": [
+								"api",
+								"openweathermap",
+								"org"
+							],
+							"path": [
+								"data",
+								"2.5",
+								"weather"
+							],
+							"query": [
+								{
+									"key": "lat",
+									"value": "{{LATITUDE}}"
+								},
+								{
+									"key": "lon",
+									"value": "{{LONGITUDE}}"
+								},
+								{
+									"key": "APPID",
+									"value": "{{APPID}}"
+								}
+							]
+						},
+						"description": "This request verifies that current weather data can be called by geografic coordinates (latitude and longitude). The tests verify that expected geografic coordinates (lat, lon), appropriate city name and weather data is present in response."
+					},
+					"response": []
+				},
+				{
+					"name": "GetWeatherByZipCode&CountryCode",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "407ae591-b59b-4f32-bf11-8582fa65a5c4",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Expected city Name is present in Response\", function () {",
+									"    pm.expect(jsonData.name).to.eql(\"Kyiv\")",
+									"})",
+									"",
+									"pm.test(\"Country code is correct\", function () {",
+									"   pm.expect(jsonData.sys.country).to.eql(\"UA\")",
+									"});",
+									"",
+									"",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "api.openweathermap.org/data/2.5/weather?zip=02140,ua&APPID={{APPID}}",
+							"host": [
+								"api",
+								"openweathermap",
+								"org"
+							],
+							"path": [
+								"data",
+								"2.5",
+								"weather"
+							],
+							"query": [
+								{
+									"key": "zip",
+									"value": "02140,ua"
+								},
+								{
+									"key": "APPID",
+									"value": "{{APPID}}"
+								}
+							]
+						},
+						"description": "This request verifies that current weather data can be called by zip code and country code. The test verify\nthat expected city, country code and weather data is present in response."
+					},
+					"response": []
+				},
+				{
+					"name": "GetWeatherByZipCode",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9ffd999a-cbeb-4510-ae67-230049c8fefb",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"pm.test(\"Expected city Name is present in Response\", function () {",
+									"    pm.expect(jsonData.name).to.eql(\"Boston\")",
+									"})",
+									"",
+									"pm.test(\"Country code in response is correct\", function () {",
+									"   pm.expect(jsonData.sys.country).to.eql(\"US\")",
+									"});",
+									"",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "api.openweathermap.org/data/2.5/weather?zip=02130&APPID={{APPID}}",
+							"host": [
+								"api",
+								"openweathermap",
+								"org"
+							],
+							"path": [
+								"data",
+								"2.5",
+								"weather"
+							],
+							"query": [
+								{
+									"key": "zip",
+									"value": "02130"
+								},
+								{
+									"key": "APPID",
+									"value": "{{APPID}}"
+								}
+							]
+						},
+						"description": "This request verifies that current weather data can be called by zip code only. The test verify that expected city, default country code (USA) and weather data is present in response."
+					},
+					"response": []
+				},
+				{
+					"name": "GetWeatherForCitiesRectangleZone",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "86f0f7c4-7bcd-490c-b826-c5a0402ee1f7",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Expected number of cities in Response is correct\", function () {",
+									"    var contains = false;",
+									"    var cityNumber = 4;",
+									"   ",
+									"    if(jsonData.cnt >= cityNumber) {",
+									"        contains = true;",
+									"    }",
+									" ",
+									"    pm.expect(contains).to.be.true;",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://api.openweathermap.org/data/2.5/box/city?bbox=30.19,50.24,30.95,50.45,30&APPID={{APPID}}",
+							"protocol": "http",
+							"host": [
+								"api",
+								"openweathermap",
+								"org"
+							],
+							"path": [
+								"data",
+								"2.5",
+								"box",
+								"city"
+							],
+							"query": [
+								{
+									"key": "bbox",
+									"value": "30.19,50.24,30.95,50.45,30"
+								},
+								{
+									"key": "APPID",
+									"value": "{{APPID}}"
+								}
+							]
+						},
+						"description": "This request verifies that current weather data can be called for cities within the defined rectangle specified by the geographic coordinates. The tests verify that expected number of cities and weather data are present in response."
+					},
+					"response": []
+				},
+				{
+					"name": "GetWeatherForCitiesCycle",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "134d1a0c-08e7-4105-add6-f21e5e541052",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Number of cities is correct\", function () {",
+									"   pm.expect(jsonData.count).to.eql(50);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://api.openweathermap.org/data/2.5/find?lat={{LATITUDE}}&lon={{LONGITUDE}}&cnt=50&APPID={{APPID}}",
+							"protocol": "http",
+							"host": [
+								"api",
+								"openweathermap",
+								"org"
+							],
+							"path": [
+								"data",
+								"2.5",
+								"find"
+							],
+							"query": [
+								{
+									"key": "lat",
+									"value": "{{LATITUDE}}"
+								},
+								{
+									"key": "lon",
+									"value": "{{LONGITUDE}}"
+								},
+								{
+									"key": "cnt",
+									"value": "50"
+								},
+								{
+									"key": "APPID",
+									"value": "{{APPID}}"
+								}
+							]
+						},
+						"description": "This request verifies that current weather data can be called for cities laid within definite circle that is specified by center point ('lat', 'lon') and expected number of cities ('cnt') around this point. The tests verify that expected number of cities and weather data are present in response."
+					},
+					"response": []
+				},
+				{
+					"name": "GetWeatherForSeveralCityIDs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "65bbda8c-d2ce-4900-aa22-3b592b065208",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Number of cities is correct\", function () {",
+									"   pm.expect(jsonData.cnt).to.eql(3);",
+									"});",
+									"",
+									"pm.test(\"City names are present in response\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"New York\", \"Kiev\", \"London\");",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://api.openweathermap.org/data/2.5/group?id=5128638,703448,2643743&units=metric&APPID={{APPID}}",
+							"protocol": "http",
+							"host": [
+								"api",
+								"openweathermap",
+								"org"
+							],
+							"path": [
+								"data",
+								"2.5",
+								"group"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "5128638,703448,2643743"
+								},
+								{
+									"key": "units",
+									"value": "metric"
+								},
+								{
+									"key": "APPID",
+									"value": "{{APPID}}"
+								}
+							]
+						},
+						"description": "This request verifies that current weather data can be called for several cities by IDs. The tests verify that expected number of cities, appropriate city names and weather data are present in response."
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "54403ac1-353e-472c-977e-f10d88ddb15f",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "911ab2b0-b2f2-4667-9c3a-5dcd93079c51",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status is ok, response is json\", function () {",
+							"    pm.response.to.be.ok; ",
+							"    pm.response.to.be.json;",
+							"});"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "WeatherFormat",
+			"description": "",
+			"item": [
+				{
+					"name": "GetWeatherFormatXml",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "dff5e845-9a7e-4550-8d50-831d508fd078",
+								"type": "text/javascript",
+								"exec": [
+									"  tests[\"Content-Type header is application/xml\"] = postman.getResponseHeader(\"Content-Type\") === \"application/xml; charset=utf-8\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "api.openweathermap.org/data/2.5/weather?q={{CITYNAME}}&mode=xml&APPID={{APPID}}",
+							"host": [
+								"api",
+								"openweathermap",
+								"org"
+							],
+							"path": [
+								"data",
+								"2.5",
+								"weather"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "{{CITYNAME}}"
+								},
+								{
+									"key": "mode",
+									"value": "xml"
+								},
+								{
+									"key": "APPID",
+									"value": "{{APPID}}"
+								}
+							]
+						},
+						"description": "This request verifies that current format for weather data can be set up as xml.\nThe tests verify that response returns in expected format mode and weather data are present in response."
+					},
+					"response": []
+				},
+				{
+					"name": "GetWeatherFormatHtml",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "215f0394-e248-46fb-ae77-e21ff2ceaf87",
+								"type": "text/javascript",
+								"exec": [
+									"  tests[\"Content-Type header is text/html\"] = postman.getResponseHeader(\"Content-Type\") === \"text/html; charset=utf-8\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "api.openweathermap.org/data/2.5/weather?q={{CITYNAME}}&mode=html&APPID={{APPID}}\n",
+							"host": [
+								"api",
+								"openweathermap",
+								"org"
+							],
+							"path": [
+								"data",
+								"2.5",
+								"weather"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "{{CITYNAME}}"
+								},
+								{
+									"key": "mode",
+									"value": "html"
+								},
+								{
+									"key": "APPID",
+									"value": "{{APPID}}\n"
+								}
+							]
+						},
+						"description": "This request verifies that current format for weather data can be set up as Html. The tests verify that response returns in expected format mode and weather data are present in response."
+					},
+					"response": []
+				},
+				{
+					"name": "GetWeatherFormatDefault",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0911dd23-38b1-4aa3-9a28-fb3a3eddcadf",
+								"type": "text/javascript",
+								"exec": [
+									"  tests[\"Content-Type header is application/json\"] = postman.getResponseHeader(\"Content-Type\") === \"application/json; charset=utf-8\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "api.openweathermap.org/data/2.5/weather?q={{CITYNAME}}&APPID={{APPID}}\n",
+							"host": [
+								"api",
+								"openweathermap",
+								"org"
+							],
+							"path": [
+								"data",
+								"2.5",
+								"weather"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "{{CITYNAME}}"
+								},
+								{
+									"key": "APPID",
+									"value": "{{APPID}}\n"
+								}
+							]
+						},
+						"description": "This request verifies that current format for weather data can be JSON by default. The tests verify that response returns in expected format mode and weather data are present in response."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search accuracy",
+			"description": "",
+			"item": [
+				{
+					"name": "Search_like",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5e7acf0e-1c13-4e55-84c4-067dba45af13",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Body has string 'like'\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"like\")",
+									"})",
+									"",
+									"pm.test(\"Body has substring 'Lond'\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"Lond\")",
+									"})",
+									"",
+									"tests[\"Number of results >0\"] = jsonData.count > 0;   "
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "api.openweathermap.org/data/2.5/find?q=Lond&type=like&APPID={{APPID}}",
+							"host": [
+								"api",
+								"openweathermap",
+								"org"
+							],
+							"path": [
+								"data",
+								"2.5",
+								"find"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "Lond"
+								},
+								{
+									"key": "type",
+									"value": "like"
+								},
+								{
+									"key": "APPID",
+									"value": "{{APPID}}"
+								}
+							]
+						},
+						"description": "This request verifies that current weather data can be called for searching cities by name using 'like' type parameter that returns results by searching for that substring. \nThe tests verify that  searching (by part of the city name) with 'like' returns results by searching for that substring."
+					},
+					"response": []
+				},
+				{
+					"name": "Search_accurate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "70fcf974-cb81-446f-82f4-62eb015e5c0f",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"",
+									"pm.test(\"Body has string 'accurate'\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"accurate\")",
+									"})",
+									"",
+									"pm.test(\"Expected latitude and longitude is present in Response'\", () => {",
+									"    pm.expect(pm.response.text()).to.include(pm.environment.get(\"LATITUDE\", \"LONGITUDE\"));",
+									"})",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "api.openweathermap.org/data/2.5/find?lat={{LATITUDE}}&lon={{LONGITUDE}}&type=accurate&APPID={{APPID}}",
+							"host": [
+								"api",
+								"openweathermap",
+								"org"
+							],
+							"path": [
+								"data",
+								"2.5",
+								"find"
+							],
+							"query": [
+								{
+									"key": "lat",
+									"value": "{{LATITUDE}}"
+								},
+								{
+									"key": "lon",
+									"value": "{{LONGITUDE}}"
+								},
+								{
+									"key": "type",
+									"value": "accurate"
+								},
+								{
+									"key": "APPID",
+									"value": "{{APPID}}"
+								}
+							]
+						},
+						"description": "This request verifies that current weather data can be called for searching cities by coorinates using 'accurate' type parameter that returns exact match values. The tests verify that searching (by lat, lon) with 'accurate' returns exact match values"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "33cafa09-973b-409f-bdfd-aefbbd2f71e3",
+				"type": "text/javascript",
+				"exec": [
+					"pm.environment.set(\"APPID\", \"a755d9970c9aa0c0de640342f5a81a6a\");",
+					"",
+					"var cityIds = [",
+					"    703448,  // Kiev",
+					"    3067696, // Praha",
+					"    5809844, // Seattle",
+					"    4887398  // Chicago",
+					"];",
+					"",
+					"var randomCityId = Math.floor((Math.random() * 3) + 1);",
+					"",
+					"postman.setEnvironmentVariable(\"CITYID\", cityIds[randomCityId])",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "93c99f59-cd53-4d32-8580-05d7925a05f2",
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Response time is less than 500ms\", () => {",
+					"    pm.expect(pm.response.responseTime).to.be.below(500)",
+					"})",
+					"",
+					"pm.test(\"Response contains object 'weather'\", () => {",
+					"    pm.expect(pm.response.text()).to.include(\"weather\")",
+					"})"
+				]
+			}
+		}
+	]
+}
